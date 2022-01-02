@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TheMovieDBApp</string>
+    <string name="textStateLoading">LOADING...</string>
+</resources>
