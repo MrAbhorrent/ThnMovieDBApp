@@ -1,4 +1,4 @@
-package ru.gb.kotlin.themoviedbapp.ui.main
+package ru.gb.kotlin.themoviedbapp.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,16 +9,12 @@ import ru.gb.kotlin.themoviedbapp.model.RepositoryImpl
 import java.lang.Thread.sleep
 import kotlin.random.Random
 
-class MainViewModel(
-    private val liveDataToObserve: MutableLiveData<AppState> =
-        MutableLiveData()
-) :
-    ViewModel() {
+class DetailViewModel: ViewModel() {
 
+    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData()
     private val repo: Repository = RepositoryImpl()
 
     fun getData(): LiveData<AppState> {
-
         getMovie()
         return liveDataToObserve
     }
@@ -31,14 +27,9 @@ class MainViewModel(
 
         liveDataToObserve.value = AppState.Loading
         Thread {
-            sleep(3000)
-            if (Random.nextBoolean()) {
-                val movie = repo.getMovieFromServer()
-                liveDataToObserve.postValue(AppState.Success(movie))
-            } else {
-                liveDataToObserve.postValue(AppState.Error(Exception("Дороги замело")))
-            }
-
+            sleep(2000)
+            val movie = repo.getMovieFromServer()
+            liveDataToObserve.postValue(AppState.Success(movie))
         }.start()
     }
 }

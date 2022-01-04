@@ -2,7 +2,7 @@ package ru.gb.kotlin.themoviedbapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import ru.gb.kotlin.themoviedbapp.ui.main.MainFragment
+import ru.gb.kotlin.themoviedbapp.ui.view.MainFragment
 
 class MainActivity : AppCompatActivity() {
 

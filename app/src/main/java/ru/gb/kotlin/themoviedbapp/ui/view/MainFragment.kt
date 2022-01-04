@@ -1,4 +1,4 @@
-package ru.gb.kotlin.themoviedbapp.ui.main
+package ru.gb.kotlin.themoviedbapp.ui.view
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -7,10 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import ru.gb.kotlin.themoviedbapp.R
 import ru.gb.kotlin.themoviedbapp.viewmodel.AppState
 import ru.gb.kotlin.themoviedbapp.model.Movie
 import ru.gb.kotlin.themoviedbapp.databinding.MainFragmentBinding
+import ru.gb.kotlin.themoviedbapp.viewmodel.MainViewModel
 
 class MainFragment : Fragment() {
 
@@ -22,6 +25,8 @@ class MainFragment : Fragment() {
 
     private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
+    private val adapter = MainFragmentAdapter()
+    private var isRussian: Boolean = false
 
 
     override fun onCreateView(
@@ -34,52 +39,66 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
+        binding.rvMainScreen.adapter = adapter
+        binding.rvMainScreen.layoutManager = LinearLayoutManager(requireActivity())
+
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         // Создали обсервер для подписки на LiveData
         val observer = Observer<AppState> { state ->
             renderData(state)
         }
         // Подписались на изменения LiveData
-        viewModel.getData().observe(viewLifecycleOwner, observer)
-        // Запросили данные из LiveData
-        viewModel.getData()
-    }
+        viewModel.getData(isRussian).observe(viewLifecycleOwner, observer)
 
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-//        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-//        val observer = Observer<Any> {
-//            renderData(it)
-//        }
-//        viewModel.getData().observe(viewLifecycleOwner, observer)
-//    }
+        // Запросили данные из LiveData
+        viewModel.getData(isRussian)
+
+        binding.fabMainChangeLanguage.setOnClickListener {
+            isRussian = !isRussian
+
+            if (isRussian) {
+                binding.fabMainChangeLanguage.setImageResource(R.drawable.ic_russia)
+            } else {
+                binding.fabMainChangeLanguage.setImageResource(R.drawable.ic_baseline_flag_24)
+            }
+            viewModel.getData(isRussian)
+        }
+
+    }
 
     private fun renderData(state: AppState) {
         when (state) {
-            is AppState.Success -> {
+            is AppState.Success<*> -> {
                 binding.onLoadingContainer.visibility = View.GONE
-                val movie = state.movie as Movie
-                binding.tvMovieName.text = movie.nameMovie
-                binding.tvMovieYear.text = movie.yearMovie.toString()
+                val movies: List<Movie> = state.data as List<Movie>
+                adapter.setMovie(movies)
+                adapter.listener = MainFragmentAdapter.OnItemClick { movie ->
+
+                    val bundle = Bundle()
+                    bundle.putParcelable("MOVIE_EXTRA", movie)
+
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.main, DetailFragment.newInstance(bundle))
+                        .addToBackStack("main")
+                        .commit()
+                }
             }
             is AppState.Error -> {
                 binding.onLoadingContainer.visibility = View.VISIBLE
                 Snackbar.make(binding.root, "Ошибка загрузки:\n ${state.error.message.toString()}", Snackbar.LENGTH_INDEFINITE)
                     .setAction("Повторить загрузку") {
-                        viewModel.getData()
+                        viewModel.getData(isRussian)
                     }
                     .show()
             }
             is AppState.Loading ->
                 binding.onLoadingContainer.visibility = View.VISIBLE
         }
-
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
-
 }
