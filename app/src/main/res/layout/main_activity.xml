@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".MainActivity" >
+    tools:context=".ui.view.MainActivity" >
 
     <fragment
         android:name="ru.gb.kotlin.themoviedbapp.ui.view.MainFragment"

@@ -21,9 +21,12 @@ class MainFragmentAdapter: RecyclerView.Adapter<MainFragmentAdapter.MainFragment
     inner class MainFragmentViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
         fun bind(movie: Movie) {
-            itemView.findViewById<TextView>(R.id.tvMovieTitle).text = movie.original_title
-            itemView.setOnClickListener {
-                listener?.onClick(movie)
+            itemView.apply {
+                findViewById<TextView>(R.id.tvMovieTitle).text = movie.original_title
+                findViewById<TextView>(R.id.tvMovieRelease).text = movie.release_date
+                setOnClickListener {
+                    listener?.onClick(movie)
+                }
             }
         }
     }

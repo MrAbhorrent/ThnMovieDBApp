@@ -1,8 +1,8 @@
-package ru.gb.kotlin.themoviedbapp
+package ru.gb.kotlin.themoviedbapp.ui.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import ru.gb.kotlin.themoviedbapp.ui.view.MainFragment
+import ru.gb.kotlin.themoviedbapp.R
 
 class MainActivity : AppCompatActivity() {
 

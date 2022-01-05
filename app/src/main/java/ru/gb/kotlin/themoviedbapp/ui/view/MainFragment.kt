@@ -21,7 +21,9 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this).get(MainViewModel::class.java)
+    }
 
     private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
@@ -43,8 +45,7 @@ class MainFragment : Fragment() {
         binding.rvMainScreen.adapter = adapter
         binding.rvMainScreen.layoutManager = LinearLayoutManager(requireActivity())
 
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // Создали обсервер для подписки на LiveData
+        // Создали наблюдатель для подписки на LiveData
         val observer = Observer<AppState> { state ->
             renderData(state)
         }
@@ -57,10 +58,9 @@ class MainFragment : Fragment() {
         binding.fabMainChangeLanguage.setOnClickListener {
             isRussian = !isRussian
 
-            if (isRussian) {
-                binding.fabMainChangeLanguage.setImageResource(R.drawable.ic_russia)
-            } else {
-                binding.fabMainChangeLanguage.setImageResource(R.drawable.ic_baseline_flag_24)
+            when (isRussian) {
+                true -> binding.fabMainChangeLanguage.setImageResource(R.drawable.ic_russia)
+                false -> binding.fabMainChangeLanguage.setImageResource(R.drawable.ic_baseline_flag_24)
             }
             viewModel.getData(isRussian)
         }
@@ -70,14 +70,14 @@ class MainFragment : Fragment() {
     private fun renderData(state: AppState) {
         when (state) {
             is AppState.Success<*> -> {
-                binding.onLoadingContainer.visibility = View.GONE
+                binding.onLoadingContainer.hide()
                 val movies: List<Movie> = state.data as List<Movie>
                 adapter.setMovie(movies)
                 adapter.listener = MainFragmentAdapter.OnItemClick { movie ->
 
-                    val bundle = Bundle()
-                    bundle.putParcelable("MOVIE_EXTRA", movie)
-
+                    val bundle = Bundle().apply {
+                        putParcelable("MOVIE_EXTRA", movie)
+                    }
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.main, DetailFragment.newInstance(bundle))
                         .addToBackStack("main")
@@ -85,7 +85,7 @@ class MainFragment : Fragment() {
                 }
             }
             is AppState.Error -> {
-                binding.onLoadingContainer.visibility = View.VISIBLE
+                binding.onLoadingContainer.show()
                 Snackbar.make(binding.root, "Ошибка загрузки:\n ${state.error.message.toString()}", Snackbar.LENGTH_INDEFINITE)
                     .setAction("Повторить загрузку") {
                         viewModel.getData(isRussian)
@@ -93,7 +93,7 @@ class MainFragment : Fragment() {
                     .show()
             }
             is AppState.Loading ->
-                binding.onLoadingContainer.visibility = View.VISIBLE
+                binding.onLoadingContainer.show()
         }
     }
 
