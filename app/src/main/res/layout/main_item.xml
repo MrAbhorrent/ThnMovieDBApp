@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="2dp">
+
+    <TextView
+        android:id="@+id/tvMovieTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        tools:text="@tools:sample/lorem"
+        android:ellipsize="end"
+        android:textSize="@dimen/textSizeSubHeader"
+        android:layout_marginTop="@dimen/minimalPadding"
+        android:padding="3dp"
+        android:background="@android:color/holo_blue_light"
+        />
+
+    <TextView
+        android:id="@+id/tvMovieRelease"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end|bottom"
+        android:textSize="16sp"
+        android:background="@android:color/holo_blue_light"
+        android:paddingRight="@dimen/minimalPadding"
+        android:paddingEnd="@dimen/minimalPadding"
+        android:paddingBottom="@dimen/minimalPadding" />
+
+</LinearLayout>

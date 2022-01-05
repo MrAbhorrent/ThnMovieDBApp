@@ -3,4 +3,6 @@
     <dimen name="stdMarginTopContainer">32dp</dimen>
     <dimen name="textSizeHeader">48sp</dimen>
     <dimen name="textSizeSubHeader">28sp</dimen>
+    <dimen name="minimalPadding">8sp</dimen>
+    <dimen name="maxMarginTitle">96dp</dimen>
 </resources>

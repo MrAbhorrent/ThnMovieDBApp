@@ -2,37 +2,62 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/detail_movie"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/holo_blue_dark"
     tools:context=".ui.view.MainFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="@dimen/minimalPadding" >
+        android:gravity="center">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvMainScreen"
-            tools:listitem="@layout/main_item"
-            tools:itemCount="10"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabMainChangeLanguage"
-            android:layout_gravity="bottom|end"
-            android:src="@drawable/ic_russia"
-            android:layout_margin="@dimen/minimalPadding"
-            app:maxImageSize="30dp"
-            android:tintMode="add"
+
+
+        <TextView
+            android:id="@+id/tvMovieName"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text=""
+            tools:text="Призрак"
+            android:textStyle="bold"
+            android:textSize="@dimen/textSizeHeader"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/encounter"
+            />
 
 
+        <TextView
+            android:id="@+id/tvMovieYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/textSizeSubHeader"
+            tools:text="@tools:sample/date/ddmmyy"/>
+
+        <TextView
+            android:id="@+id/tvGenres"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Драма"
+            android:textSize="@dimen/textSizeSubHeader"
+            />
+
+    </LinearLayout>
+
+    </ScrollView>
 
     <LinearLayout
+        android:visibility="gone"
         tools:visibility="gone"
         android:id="@+id/onLoadingContainer"
         android:layout_width="match_parent"
@@ -56,5 +81,7 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
+
+
 
 </FrameLayout>
