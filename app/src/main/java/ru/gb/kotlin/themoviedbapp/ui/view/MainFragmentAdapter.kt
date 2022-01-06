@@ -10,11 +10,11 @@ import ru.gb.kotlin.themoviedbapp.model.Movie
 
 class MainFragmentAdapter: RecyclerView.Adapter<MainFragmentAdapter.MainFragmentViewHolder>() {
 
-    private var movie: List<Movie> = listOf()
+    private var movies: List<Movie> = listOf()
     var listener: OnItemClick? = null
 
     fun setMovie(data: List<Movie>) {
-        movie = data
+        movies = data
         notifyDataSetChanged()
     }
 
@@ -22,8 +22,8 @@ class MainFragmentAdapter: RecyclerView.Adapter<MainFragmentAdapter.MainFragment
 
         fun bind(movie: Movie) {
             itemView.apply {
-                findViewById<TextView>(R.id.tvMovieTitle).text = movie.original_title
-                findViewById<TextView>(R.id.tvMovieRelease).text = movie.release_date
+                movie.original_title.also { findViewById<TextView>(R.id.tvMovieTitle).text = it }
+                movie.release_date.also { findViewById<TextView>(R.id.tvMovieRelease).text = it }
                 setOnClickListener {
                     listener?.onClick(movie)
                 }
@@ -38,10 +38,10 @@ class MainFragmentAdapter: RecyclerView.Adapter<MainFragmentAdapter.MainFragment
     }
 
     override fun onBindViewHolder(holder: MainFragmentViewHolder, position: Int) {
-        holder.bind(movie[position])
+        holder.bind(movies[position])
     }
 
-    override fun getItemCount(): Int = movie.size
+    override fun getItemCount(): Int = movies.size
 
     fun interface OnItemClick {
         fun onClick(movie: Movie)

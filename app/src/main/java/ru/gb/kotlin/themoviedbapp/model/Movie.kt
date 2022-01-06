@@ -6,9 +6,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Movie(
     val id: Int = 289,
-    val original_title: String = "Casablanca",
-    val release_date: String = "1943-01-23",
-    val genres: Genres = Genres()
+    val original_title: String? = "Casablanca",
+    val release_date: String? = "1943-01-23",
+    val original_language: String? = "en",
+    //val genres: Genres = Genres(),
+    val overview: String?,
 ) : Parcelable
 
 @Parcelize
@@ -18,18 +20,19 @@ data class Genres(
 ) : Parcelable
 
 fun getMoviesWorld(): List<Movie> = listOf(
-    Movie(289, "Casablanca", "1943-01-23", Genres()),
-    Movie(568124, "Encanto", "2021-11-25", Genres()),
-    Movie(728526, "Encounter", "2021-12-03", Genres()),
-    Movie(2, "Ariel", "1988-10-21", Genres(80, "Crime")),
-    Movie(3, "Varjoja paratiisissa", "1986-10-17", Genres()),
-    Movie(5, "Four Rooms", "1995-12-09", Genres(80, "Crime"))
+    Movie(289, "Casablanca", "1943-01-23", "en", ""),
+    Movie(568124, "Encanto", "2021-11-25", "", ""),
+    Movie(728526, "Encounter", "2021-12-03", "", ""),
+    Movie(2, "Ariel", "1988-10-21", "", ""),
+    Movie(3, "Varjoja paratiisissa", "1986-10-17", "", ""),
+    Movie(5, "Four Rooms", "1995-12-09", "en", ""),
+    Movie(8, "Some movie", "-", "", "")
 )
 
 fun getMoviesRus(): List<Movie> = listOf(
-    Movie(2, "Первый фильм", "1940-10-03", Genres(1, "Комедия")),
-    Movie(6, "Еще один фильм", "2021-11-25", Genres(2, "Трагедия")),
-    Movie(9, "Фильм 12", "1974-01-23", Genres(3, "Про людёв"))
+    Movie(2, "Первый фильм", "1940-10-03", "ru", ""),
+    Movie(6, "Еще один фильм", "2021-11-25", "ru", ""),
+    Movie(9, "Фильм 12", "1974-01-23", "ru", "")
 )
 
 fun getGenres(): List<Genres> = listOf(

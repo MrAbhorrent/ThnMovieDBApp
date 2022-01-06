@@ -1,18 +1,18 @@
 package ru.gb.kotlin.themoviedbapp.ui.view
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ru.gb.kotlin.themoviedbapp.R
-import ru.gb.kotlin.themoviedbapp.viewmodel.AppState
-import ru.gb.kotlin.themoviedbapp.model.Movie
 import ru.gb.kotlin.themoviedbapp.databinding.MainFragmentBinding
+import ru.gb.kotlin.themoviedbapp.model.Movie
+import ru.gb.kotlin.themoviedbapp.viewmodel.AppState
 import ru.gb.kotlin.themoviedbapp.viewmodel.MainViewModel
 
 class MainFragment : Fragment() {
@@ -45,6 +45,8 @@ class MainFragment : Fragment() {
         binding.rvMainScreen.adapter = adapter
         binding.rvMainScreen.layoutManager = LinearLayoutManager(requireActivity())
 
+
+
         // Создали наблюдатель для подписки на LiveData
         val observer = Observer<AppState> { state ->
             renderData(state)
@@ -71,7 +73,7 @@ class MainFragment : Fragment() {
         when (state) {
             is AppState.Success<*> -> {
                 binding.onLoadingContainer.hide()
-                val movies: List<Movie> = state.data as List<Movie>
+                val movies = state.data as List<Movie>
                 adapter.setMovie(movies)
                 adapter.listener = MainFragmentAdapter.OnItemClick { movie ->
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="stdMarginTopContainer">32dp</dimen>
-    <dimen name="textSizeHeader">48sp</dimen>
-    <dimen name="textSizeSubHeader">28sp</dimen>
+    <dimen name="stdMarginTopContainer">28dp</dimen>
+    <dimen name="textSizeHeader">36sp</dimen>
+    <dimen name="textSizeSubHeader">24sp</dimen>
     <dimen name="minimalPadding">8sp</dimen>
     <dimen name="maxMarginTitle">96dp</dimen>
 </resources>
