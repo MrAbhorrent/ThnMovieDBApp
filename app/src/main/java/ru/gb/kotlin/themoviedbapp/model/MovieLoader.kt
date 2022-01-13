@@ -1,5 +1,6 @@
 package ru.gb.kotlin.themoviedbapp.model
 
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -9,69 +10,102 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.lang.StringBuilder
 import java.net.URL
+import java.util.stream.Collectors
 import javax.net.ssl.HttpsURLConnection
 
 object MovieLoader {
 
-    val DEBUGLOG = "DEBUGLOG"
-    //private val API_KEY = "8050abba17a7e21ef89a9f4273c36919"
-    private val API_KEY = BuildConfig.API_KEY
-    val mainURLString =  "https://api.themoviedb.org/3"
+    private const val DEBUG_LOG = "DEBUG_LOG"
+    private const val API_KEY = BuildConfig.API_KEY
+    private const val mainURLString = "https://api.themoviedb.org/3"
+
+    fun loadIntentMovie(id: Int, listener: OnMovieLoadListener) {
+
+        val urlMovieData: String = "$mainURLString/movie/$id?api_key=$API_KEY"
+        Log.d(DEBUG_LOG, "url: $urlMovieData")
+
+        var urlConnection: HttpsURLConnection? = null
+        try {
+            var uri = URL(urlMovieData)
+            urlConnection = uri.openConnection() as HttpsURLConnection
+            urlConnection.also {
+                it.requestMethod = "GET"
+                it.readTimeout = 2000
+                it.connectTimeout = 3000
+            }
+            val reader = BufferedReader(InputStreamReader(urlConnection.inputStream))
+            val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                reader.lines().collect(Collectors.joining("\n"))
+            } else {
+                StringBuilder().apply {
+                    val iterator = reader.lineSequence().iterator()
+                    while (iterator.hasNext()) {
+                        this.append(iterator.next())
+                    }
+                }.toString()
+            }
+            Log.d(DEBUG_LOG, "result: $result")
+
+            try {
+                val movieDTO = Gson().fromJson(result, MovieDTO::class.java)
+                listener.onLoaded(movieDTO)
+                Log.d(DEBUG_LOG, "listener.onLoaded: $movieDTO")
+
+            } catch (e: Exception) {
+                Log.d(DEBUG_LOG, "Fail parsing data : ${e.message}")
+                listener.onFailed(e)
+            }
+        } catch (e: Exception) {
+            listener.onFailed(e)
+            Log.d(DEBUG_LOG, "Fail getting data : ${e.message}")
+        } finally {
+            urlConnection?.disconnect()
+        }
+
+    }
 
     fun loadMovie(id: Int, listener: OnMovieLoadListener) {
 
         val handler = Handler(Looper.myLooper() ?: Looper.getMainLooper())
         val urlMovieData: String = "$mainURLString/movie/$id?api_key=$API_KEY"
-        Log.d(DEBUGLOG, "result: $urlMovieData")
+        Log.d(DEBUG_LOG, "url: $urlMovieData")
+
         Thread {
             var urlConnection: HttpsURLConnection? = null
 
             try {
                 var uri = URL(urlMovieData)
-
                 urlConnection = uri.openConnection() as HttpsURLConnection
-                urlConnection.requestMethod = "GET"
-                urlConnection.readTimeout = 2000
-                urlConnection.connectTimeout = 3000
-                val reader = BufferedReader(InputStreamReader(urlConnection.inputStream))
-//                val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                    reader.lines().collect(Collectors.joining("\n"))
-//                } else {
-//                    ""
-//                }
-                val stringBuilder = StringBuilder()
-                val iterator = reader.lineSequence().iterator()
-                while (iterator.hasNext()) {
-                    stringBuilder.append(iterator.next())
+                urlConnection.also {
+                    it.requestMethod = "GET"
+                    it.readTimeout = 2000
+                    it.connectTimeout = 3000
                 }
-                val result = stringBuilder.toString()
-//                val stringBuilder = StringBuilder()
-//                var line: String?
-//                while (reader.readLine() != null ) {
-//                    line = readLine()
-//                    stringBuilder.append(line)
-//                }
-                //while (reader.readLine().also { line = it } != null) {
-                //    stringBuilder.append(line)
-                //}
-                //val result = stringBuilder.toString()
-                Log.d(DEBUGLOG, "result: $result")
+                val reader = BufferedReader(InputStreamReader(urlConnection.inputStream))
+                val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    reader.lines().collect(Collectors.joining("\n"))
+                } else {
+                    StringBuilder().apply {
+                        val iterator = reader.lineSequence().iterator()
+                        while (iterator.hasNext()) {
+                            this.append(iterator.next())
+                        }
+                    }.toString()
+                }
+                Log.d(DEBUG_LOG, "result: $result")
 
                 try {
                     val movieDTO = Gson().fromJson(result, MovieDTO::class.java)
-                    handler.post {
-                        listener.onLoaded(movieDTO)
-                    }
-                } catch (e: Exception) {
-                    Log.d(DEBUGLOG, "Fail parsing data : ${e.message}")
-                    listener.onFailed(e)
-                }
+                    handler.post { listener.onLoaded(movieDTO) }
+                    Log.d(DEBUG_LOG, "listener.onLoaded: $movieDTO")
 
-            } catch (e: Exception) {
-                handler.post {
-                    listener.onFailed(e)
+                } catch (e: Exception) {
+                    Log.d(DEBUG_LOG, "Fail parsing data : ${e.message}")
+                    handler.post { listener.onFailed(e) }
                 }
-                Log.d(DEBUGLOG, "Fail getting data : ${e.message}")
+            } catch (e: Exception) {
+                handler.post { listener.onFailed(e) }
+                Log.d(DEBUG_LOG, "Fail getting data : ${e.message}")
             } finally {
                 urlConnection?.disconnect()
             }
@@ -82,7 +116,7 @@ object MovieLoader {
 
         val handler = Handler(Looper.myLooper() ?: Looper.getMainLooper())
         val urlTrendsData: String = "$mainURLString/trending/all/day?api_key=$API_KEY"
-        Log.d(DEBUGLOG, "result: $urlTrendsData")
+        Log.d(DEBUG_LOG, "url : $urlTrendsData")
         Thread {
             var urlConnection: HttpsURLConnection? = null
 
@@ -90,17 +124,24 @@ object MovieLoader {
                 var uri = URL(urlTrendsData)
 
                 urlConnection = uri.openConnection() as HttpsURLConnection
-                urlConnection.requestMethod = "GET"
-                urlConnection.readTimeout = 2000
-                urlConnection.connectTimeout = 3000
-                val reader = BufferedReader(InputStreamReader(urlConnection.inputStream))
-                val stringBuilder = StringBuilder()
-                val iterator = reader.lineSequence().iterator()
-                while (iterator.hasNext()) {
-                    stringBuilder.append(iterator.next())
+
+                with(urlConnection) {
+                    requestMethod = "GET"
+                    readTimeout = 2000
+                    connectTimeout = 3000
                 }
-                val result = stringBuilder.toString()
-                Log.d(DEBUGLOG, "result: $result")
+                val reader = BufferedReader(InputStreamReader(urlConnection.inputStream))
+                val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    reader.lines().collect(Collectors.joining("\n"))
+                } else {
+                    StringBuilder().apply {
+                        val iterator = reader.lineSequence().iterator()
+                        while (iterator.hasNext()) {
+                            this.append(iterator.next())
+                        }
+                    }.toString()
+                }
+                Log.d(DEBUG_LOG, "result: $result")
 
                 try {
                     val movieTrendsDTO = Gson().fromJson(result, MovieTrendsDTO::class.java)
@@ -108,14 +149,14 @@ object MovieLoader {
                         listener.onLoadedTrends(movieTrendsDTO)
                     }
                 } catch (e: Exception) {
-                    Log.d(DEBUGLOG, "Fail parsing data : ${e.message}")
+                    Log.d(DEBUG_LOG, "Fail parsing data : ${e.message}")
                     listener.onFailed(e)
                 }
             } catch (e: Exception) {
                 handler.post {
                     listener.onFailed(e)
                 }
-                Log.d(DEBUGLOG, "Fail getting data : ${e.message}")
+                Log.d(DEBUG_LOG, "Fail getting data : ${e.message}")
             } finally {
                 urlConnection?.disconnect()
             }

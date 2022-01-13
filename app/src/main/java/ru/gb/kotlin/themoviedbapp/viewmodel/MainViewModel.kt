@@ -6,29 +6,21 @@ import androidx.lifecycle.ViewModel
 import ru.gb.kotlin.themoviedbapp.model.*
 import java.lang.Thread.sleep
 
-class MainViewModel(
-    private val liveDataToObserve: MutableLiveData<AppState> =
-        MutableLiveData()
-) :
-    ViewModel() {
+class MainViewModel:  ViewModel() {
 
-    private val repo: Repository = RepositoryImpl()
+    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData()
+    private val repo: Repository = RepositoryImpl
 
-    fun getData(isFlag: Boolean): LiveData<AppState> {
+    fun getData(): LiveData<AppState> = liveDataToObserve
 
+    fun getMovies(isFlag: Boolean) {
         getDataFromServer()
-        //getMovies(isFlag)
-        return liveDataToObserve
-    }
-
-    private fun getMovies(isFlag: Boolean) {
-        getDataFromLocalSource(isFlag)
     }
 
     private fun getMoviesFromLocalStorageRus() = repo.getMovieFromLocalStorageRus()
     private fun getMoviesFromLocalStorageWorld() = repo.getMovieFromLocalStorageWorld()
 
-    fun getMoviesFromRemoteSource() = getDataFromLocalSource(false)
+    fun getMoviesFromRemoteSource() = getDataFromServer()
 
     private fun getDataFromLocalSource(isRussian: Boolean) {
 
@@ -61,7 +53,7 @@ class MainViewModel(
             }
 
             override fun onFailed(throwable: Throwable) {
-                TODO("Not yet implemented")
+                liveDataToObserve.postValue(AppState.Error(throwable))
             }
         })
     }

@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 data class MovieDTO(
     val adult: Boolean?,
     val backdrop_path: String?,
-    val belongs_to_collection: String?,
+    //val belongs_to_collection: String?,
     val budget: Int?,
     //val genres: Genres?,
     val homepage: String?,

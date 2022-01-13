@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ru.gb.kotlin.themoviedbapp.R
@@ -43,19 +44,17 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.rvMainScreen.adapter = adapter
-        binding.rvMainScreen.layoutManager = LinearLayoutManager(requireActivity())
-
-
+        binding.rvMainScreen.layoutManager = GridLayoutManager(requireActivity(),2)
 
         // Создали наблюдатель для подписки на LiveData
         val observer = Observer<AppState> { state ->
             renderData(state)
         }
         // Подписались на изменения LiveData
-        viewModel.getData(isRussian).observe(viewLifecycleOwner, observer)
+        viewModel.getData().observe(viewLifecycleOwner, observer)
 
         // Запросили данные из LiveData
-        viewModel.getData(isRussian)
+        viewModel.getMovies(isRussian)
 
         binding.fabMainChangeLanguage.setOnClickListener {
             isRussian = !isRussian
@@ -64,9 +63,8 @@ class MainFragment : Fragment() {
                 true -> binding.fabMainChangeLanguage.setImageResource(R.drawable.ic_russia)
                 false -> binding.fabMainChangeLanguage.setImageResource(R.drawable.ic_baseline_flag_24)
             }
-            viewModel.getData(isRussian)
+            viewModel.getData()
         }
-
     }
 
     private fun renderData(state: AppState) {
@@ -78,7 +76,7 @@ class MainFragment : Fragment() {
                 adapter.listener = MainFragmentAdapter.OnItemClick { movie ->
 
                     val bundle = Bundle().apply {
-                        putParcelable("MOVIE_EXTRA", movie)
+                        putParcelable(getString(R.string.KEY_MOVIE_EXTRA), movie)
                     }
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.main, DetailFragment.newInstance(bundle))
@@ -89,8 +87,8 @@ class MainFragment : Fragment() {
             is AppState.Error -> {
                 binding.onLoadingContainer.show()
                 Snackbar.make(binding.root, "Ошибка загрузки:\n ${state.error.message.toString()}", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Повторить загрузку") {
-                        viewModel.getData(isRussian)
+                    .setAction(getString(R.string.messageRepeatLoading)) {
+                        viewModel.getMovies(isRussian)
                     }
                     .show()
             }
