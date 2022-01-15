@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="stdMarginTopContainer">32dp</dimen>
-    <dimen name="textSizeHeader">48sp</dimen>
-    <dimen name="textSizeSubHeader">28sp</dimen>
+
+    <!-- Margin and Padding parts-->
+    <dimen name="stdMarginTopContainer">28dp</dimen>
+    <dimen name="minimalPadding">8dp</dimen>
+    <dimen name="maxMarginTitle">84dp</dimen>
+
+    <!-- textSize parts -->
+    <dimen name="textSizeHeader">28sp</dimen>
+    <dimen name="textSizeSubHeader">18sp</dimen>
+    <dimen name="tvTextSizeMovieInfo">12sp</dimen>
+
 </resources>
