@@ -3,8 +3,10 @@ package ru.gb.kotlin.themoviedbapp.ui.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
 import ru.gb.kotlin.themoviedbapp.R
 import ru.gb.kotlin.themoviedbapp.model.Movie
 
@@ -22,8 +24,12 @@ class MainFragmentAdapter: RecyclerView.Adapter<MainFragmentAdapter.MainFragment
 
         fun bind(movie: Movie) {
             itemView.apply {
-                movie.original_title.also { findViewById<TextView>(R.id.tvMovieTitle).text = it }
+                movie.title.also { findViewById<TextView>(R.id.tvMovieTitle).text = it }
                 movie.release_date.also { findViewById<TextView>(R.id.tvMovieRelease).text = it }
+                movie.poster_path.also { findViewById<ImageView>(R.id.imgvPosterPreview).load("https://image.tmdb.org/t/p/w500${movie.poster_path}") {
+                    crossfade(true)
+                    placeholder(R.drawable.coming_soon)
+                } }
                 setOnClickListener {
                     listener?.onClick(movie)
                 }

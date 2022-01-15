@@ -39,16 +39,15 @@ class DetailViewModel : ViewModel() {
             override fun onLoaded(movieDTO: MovieDTO) {
                 val movie = Movie(
                     id = movieDTO.id?.toInt() ?: 0,
+                    title = movieDTO.title,
                     original_title = movieDTO.original_title.toString(),
                     release_date = movieDTO.release_date.toString(),
                     original_language = movieDTO.original_language.toString(),
-                    overview = movieDTO.overview?.toString()
+                    overview = movieDTO.overview,
+                    popularity = movieDTO.popularity,
+                    poster_path = movieDTO.poster_path
                 )
                 liveDataToObserve.postValue(AppState.Success(movie))
-            }
-
-            override fun onLoadedTrends(movieTrendsDTO: MovieTrendsDTO) {
-                //TODO("Not yet implemented")
             }
 
             override fun onFailed(throwable: Throwable) {

@@ -69,8 +69,8 @@ data class MovieShortDTO(
     //val backdrop_path: String?,
     //val video: Boolean,
     //val genre_ids: Array<Int>?,
-    //val title: String?,
-    //val poster_path: String?,
-    //val popularity: String?,
+    val title: String?,
+    val poster_path: String?,
+    val popularity: Float?,
     //val media_type: String?
 ) : Parcelable

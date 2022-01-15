@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import coil.api.load
 import com.google.android.material.snackbar.Snackbar
 import ru.gb.kotlin.themoviedbapp.R
 import ru.gb.kotlin.themoviedbapp.databinding.DetailFragmentBinding
@@ -40,10 +41,14 @@ class DetailFragment : Fragment() {
 
         RepositoryImpl.getMovieFromServer()?.let { movie ->
             with(binding) {
-                tvMovieName.text = movie.original_title
+                tvMovieName.text = movie.title
                 tvMovieYear.text = "Дата релиза: ${movie.release_date}"
                 tvOriginalLanguage.text = "Язык - ${movie.original_language}"
                 tvDescription.text = "Описание:\n ${movie.overview}"
+                imgPosterPreview.load("https://image.tmdb.org/t/p/w500${movie.poster_path}") {
+                    crossfade(true)
+                    placeholder(R.drawable.coming_soon)
+                }
             }
             Log.d("DEBUGLOG", "id - ${movie.id}; Release - ${movie.release_date}; Title - ${movie.original_title}")
 
@@ -94,10 +99,15 @@ class DetailFragment : Fragment() {
                 binding.onLoadingContainer.hide()
                 val movie = state.data as Movie
                 with(binding) {
-                    tvMovieName.text = movie.original_title
+                    tvMovieName.text = movie.title
                     tvMovieYear.text = "Дата релиза: ${movie.release_date}"
                     tvOriginalLanguage.text = "Язык - ${movie.original_language}"
                     tvDescription.text = "Описание:\n ${movie.overview}"
+                    Log.d("DEBUGLOG", "Query image: https://image.tmdb.org/t/p/w500${movie.poster_path}")
+                    imgPosterPreview.load("https://image.tmdb.org/t/p/w500${movie.poster_path}") {
+                        crossfade(true)
+                        placeholder(R.drawable.coming_soon)
+                    }
                 }
             }
             is AppState.Error -> {

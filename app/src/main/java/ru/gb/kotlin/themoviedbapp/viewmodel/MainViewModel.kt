@@ -37,16 +37,13 @@ class MainViewModel:  ViewModel() {
 
         liveDataToObserve.value = AppState.Loading
         sleep(1000)
-        MovieLoader.loadTrends(object: MovieLoader.OnMovieLoadListener {
-            override fun onLoaded(movieDTO: MovieDTO) {
-                TODO("Not yet implemented")
-            }
+        MovieLoader.loadTrends(object: MovieLoader.OnMovieListLoadListener {
 
             override fun onLoadedTrends(movieTrendsDTO: MovieTrendsDTO) {
 
                 val movies = mutableListOf<Movie>()
                 movieTrendsDTO.results.forEach{ it ->
-                    val movie = Movie(it.id, it.original_title, it.release_date, it.original_language, it.overview)
+                    val movie = Movie(it.id, it.title, it.original_title, it.release_date, it.original_language, it.overview, it.popularity, it.poster_path)
                     movies.add(movie)
                 }
                 liveDataToObserve.postValue(AppState.Success(movies))

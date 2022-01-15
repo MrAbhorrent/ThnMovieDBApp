@@ -5,7 +5,7 @@ object RepositoryImpl: Repository {
     private val listeners: MutableList<Repository.OnLoadListener> = mutableListOf()
     private var movie: Movie? = null
 
-    override fun getMovieFromServer(): Movie = movie ?: Movie(0,"Ghost Squad", "1961-01-01", "", "")
+    override fun getMovieFromServer(): Movie = movie ?: Movie(0,"Отряд призраков","Ghost Squad", "1961-01-01", "", "", 0f, "")
 
     override fun getMovieFromLocalStorageWorld(): List<Movie> = getMoviesWorld()
     override fun getMovieFromLocalStorageRus(): List<Movie> = getMoviesRus()

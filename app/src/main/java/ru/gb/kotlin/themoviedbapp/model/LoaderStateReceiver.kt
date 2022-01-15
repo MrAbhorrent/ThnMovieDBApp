@@ -25,7 +25,7 @@ class LoaderStateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
-        Log.d(Companion.LOG_TAG, "onReceive $intent")
+        Log.d(LOG_TAG, "onReceive $intent")
         this.context = context
 
         when (intent.action) {

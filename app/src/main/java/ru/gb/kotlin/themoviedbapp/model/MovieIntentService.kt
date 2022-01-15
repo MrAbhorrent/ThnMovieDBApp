@@ -18,23 +18,22 @@ class MovieIntentService : IntentService("MovieIntentService") {
         createLogMessage("event: onHandleIntent ${intent?.getParcelableExtra<Movie>("MOVIE_EXTRA")}")
 
         intent?.getParcelableExtra<Movie>(getString(R.string.KEY_MOVIE_EXTRA))?.let { movie ->
-            MovieLoader.loadIntentMovie(movie.id, object : MovieLoader.OnMovieLoadListener {
+            MovieLoader.loadRetrofitMovie(movie.id, object : MovieLoader.OnMovieLoadListener {
                 override fun onLoaded(movieDTO: MovieDTO) {
                     applicationContext.sendBroadcast(Intent(applicationContext, LoaderStateReceiver::class.java).apply {
                         action = LoaderStateReceiver.MOVIE_LOAD_SUCCESS
                         putExtra("MOVIE_EXTRA", Movie(
                             id = movieDTO.id ?: 0,
+                            title = movieDTO.title ?: "",
                             original_title = movieDTO.original_title ?: "",
                             original_language = movieDTO.original_language ?: "-",
                             release_date = movieDTO.release_date ?: "n/a",
-                            overview = movieDTO.overview ?: ""
+                            overview = movieDTO.overview ?: "",
+                            popularity = movieDTO.popularity ?: 0f,
+                            poster_path = movieDTO.poster_path ?: ""
                         ))
                         createLogMessage("putExtra: $movie")
                     })
-                }
-
-                override fun onLoadedTrends(movieTrendsDTO: MovieTrendsDTO) {
-                    //TODO("Not yet implemented")
                 }
 
                 override fun onFailed(throwable: Throwable) {
